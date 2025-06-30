@@ -5,8 +5,8 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import Login from "./Login";
-import Signup from "./Signup";
+import Login from "./login";
+import Signup from "./signup";
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token") || "");
