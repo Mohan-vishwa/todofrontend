@@ -5,14 +5,11 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import Login from "./login";
-import Signup from "./signup";
+import Login from "./Login";
+import Signup from "./Signup";
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token") || "");
-  const [username, setUsername] = useState(
-    localStorage.getItem("username") || ""
-  );
   const [tasks, setTasks] = useState([]);
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterPriority, setFilterPriority] = useState("all");
@@ -25,41 +22,20 @@ function App() {
       }
     );
     const data = await response.json();
+    console.log("Fetched tasks:", data);
+    // Ensure tasks is always an array
     setTasks(Array.isArray(data) ? data : data.tasks || []);
   };
-  useEffect(() => {
-    const stored = localStorage.getItem("username");
-    if (stored) {
-      setUsername(stored);
-    }
-  }, []);
+
   useEffect(() => {
     if (token) fetchTasks(token);
   }, [token]);
 
   const logout = () => {
     setToken("");
-    setUsername("");
-    setTasks([]);
     localStorage.removeItem("token");
-    localStorage.removeItem("username");
+    setTasks([]);
   };
-  {
-    tasks.map((task) => (
-      <div key={task._id} className="mb-4 p-4 border rounded-lg shadow">
-        <p className="text-lg font-semibold">{task.text}</p>
-
-        {/* Show timestamp */}
-        <p className="text-sm text-gray-500">
-          Created: {new Date(task.createdAt).toLocaleString()}
-        </p>
-
-        {/* Optionally include status, priority, etc. */}
-        <p>Status: {task.status}</p>
-        <p>Priority: {task.priority}</p>
-      </div>
-    ));
-  }
 
   const addTask = async (text) => {
     const response = await fetch(
@@ -124,33 +100,30 @@ function App() {
       (filterPriority === "all" || task.priority === filterPriority)
   );
 
+  // Main app UI for authenticated users
   const MainApp = () => (
-    <div className="main_screen bg-blue-200 flex flex-col min-h-screen">
-      <nav className="bg-blue-700 text-white px-6 py-4 flex justify-between items-center shadow-md">
-        <ul className="flex space-x-4 items-center">
+    <div className="min-h-screen bg-orange-50 flex flex-col">
+      <nav className="bg-orange-500 text-white px-6 py-4 flex justify-between items-center shadow-md">
+        <ul className="flex space-x-4">
           <li>
             <a
               href="#"
-              className="px-4 py-2 rounded-full font-semibold  transition-colors  duration-200 hover:bg-pink-600 hover:text-yellow  focus:outline-none bg-orange-100 bg-green-200 text-blue-700 shadow-sm"
+              className="px-4 py-2 rounded-full font-semibold transition-colors duration-200 hover:bg-orange-600 hover:text-white focus:bg-orange-700 focus:outline-none bg-orange-100 text-orange-700 shadow-sm"
             >
               Home
             </a>
           </li>
-          {username && (
-            <span className="text--600 font-semibold">Hello, {username}!</span>
-          )}
         </ul>
         <button
           onClick={logout}
-          className="px-4 py-2 bg-red-500 hover:bg-red-600 text-black font-bold rounded-full shadow transition-colors duration-200"
+          className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-bold rounded-full shadow transition-colors duration-200"
         >
           Logout
         </button>
       </nav>
-
       <main className="flex-1 p-8">
         <h1 className="text-4xl font-extrabold text-center mb-8 text-orange-600 drop-shadow">
-          TASK Manager
+          MERN To-Do App
         </h1>
         <form
           onSubmit={(e) => {
@@ -167,7 +140,7 @@ function App() {
           />
           <button
             type="submit"
-            className="px-6 py-2 bg-green-500 hover:bg-orange-600 text-white font-bold rounded-lg transition-colors duration-200"
+            className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg transition-colors duration-200"
           >
             Add
           </button>
@@ -211,7 +184,7 @@ function App() {
                   className={`px-3 py-1 rounded-full font-semibold transition-colors duration-200 ${
                     task.status === "pending"
                       ? "bg-yellow-400 text-yellow-900 hover:bg-yellow-500"
-                      : "bg-green-400 text-green-900 hover:bg-blue-500"
+                      : "bg-green-400 text-green-900 hover:bg-green-500"
                   }`}
                 >
                   {task.status === "pending" ? "Mark Complete" : "Mark Pending"}
@@ -219,16 +192,12 @@ function App() {
                 <select
                   value={task.priority}
                   onChange={(e) => updateTaskPriority(task._id, e.target.value)}
-                  className={`p-2 border-2 border-orange-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400
-                      ${task.priority === "high" ? "bg-red-200" : ""}
-                      ${task.priority === "medium" ? "bg-blue-200" : ""}
-                      ${task.priority === "low" ? "bg-green-200" : ""}`}
+                  className="p-2 border-2 border-orange-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
                 >
                   <option value="low">Low</option>
                   <option value="medium">Medium</option>
                   <option value="high">High</option>
                 </select>
-
                 <button
                   onClick={() => deleteTask(task._id)}
                   className="flex items-center gap-1 px-3 py-1 bg-red-500 hover:bg-red-700 text-white font-semibold rounded-full transition-colors duration-200 ml-2"
@@ -241,7 +210,6 @@ function App() {
           ))}
         </ul>
       </main>
-
       <footer className="bg-orange-500 text-white p-4 mt-auto text-center shadow-inner">
         © 2025 Your To-Do App
       </footer>
