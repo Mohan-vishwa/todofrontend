@@ -16,7 +16,7 @@ function App() {
 
   const fetchTasks = async (token) => {
     const response = await fetch(
-      "https://todobackend-bi77.onrender.com/tasks",
+      "https://todobackend-s1o5.onrender.com/tasks",
       {
         headers: { Authorization: `Bearer ${token}` },
       }
