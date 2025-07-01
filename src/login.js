@@ -12,48 +12,28 @@ export default function Login({ setToken }) {
     setAuthLoading(true);
     setAuthError("");
 
-    try {
-      const response = await fetch(
-        "https://todobackend-s1o5.onrender.com/login",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, password }),
-        }
-      );
-
-      const data = await response.json();
-      console.log("Login response:", data);
-
-      setAuthLoading(false);
-
-      if (data.token) {
-        setToken(data.token);
-        localStorage.setItem("token", data.token);
-
-        // ✅ Pick the best possible username from the response
-        const name =
-          data.user?.name ||
-          data.user?.username ||
-          data.name ||
-          data.username ||
-          "User";
-
-        localStorage.setItem("username", name);
-        navigate("/");
-      } else {
-        setAuthError(data.message || "Login failed");
+    const response = await fetch(
+      "https://todobackend-bi77.onrender.com/login",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
       }
-    } catch (error) {
-      setAuthLoading(false);
-      setAuthError("An error occurred. Please try again.");
-      console.error("Login error:", error);
+    );
+    const data = await response.json();
+    setAuthLoading(false);
+    if (data.token) {
+      setToken(data.token);
+      localStorage.setItem("token", data.token);
+      navigate("/");
+    } else {
+      setAuthError(data.message || "Login failed");
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-16 p-8 bg-blue-500 rounded-lg border border-orange-200">
-      <h2 className="text-3xl font-extrabold mb-6 text-center text-yellow-500">
+    <div className="max-w-md mx-auto mt-16 p-8 bg-blue-500 rounded-lg border border-blue-200">
+      <h2 className="text-3xl font-extrabold mb-6 text-center text-orange-600">
         Login
       </h2>
       {authError && (
@@ -71,27 +51,43 @@ export default function Login({ setToken }) {
           type="text"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          className="p-3 border-2 border-orange-300 rounded w-full mb-4 focus:outline-none focus:ring-2 focus:ring-orange-400"
+          className=" p-3
+          border-2
+          border-orange-300
+          rounded
+          w-full
+          mb-4
+          focus:outline-none
+          focus:ring-2
+          focus:ring-orange-400"
           placeholder="Username"
         />
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="p-3 border-2 border-orange-300 rounded w-full mb-4 focus:outline-none focus:ring-2 focus:ring-orange-400"
-          placeholder="Password"
+          className=" p-3
+          border-2
+          border-orange-300
+          rounded
+          w-full
+          mb-4
+          focus:outline-none
+          focus:ring-2
+          focus:ring-orange-400"
+          placeholder="password"
         />
         <button
           type="submit"
-          className="px-4 py-2 bg-green-500 hover:bg-blue-600 text-white rounded w-full transition-color duration-200"
+          className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded w-full transition-color duration-200 "
         >
-          {authLoading ? "Logging in..." : "Login"}
+          {authLoading ? "Loggin in...." : "Login"}
         </button>
       </form>
       <div className="mt-5 text-center text-gray-700">
-        Don't have an account?{" "}
+        Don't have an account?
         <Link to="/signup">
-          <span className="text-red-500 hover:underline font-semibold">
+          <span className="text-orange-500 hover:underline font-semibold">
             Signup
           </span>
         </Link>
